@@ -1,6 +1,7 @@
 import React from 'react'
-import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag';
+import '../styles/userinfo.css'
+import { Query } from 'react-apollo';
 
 
 const GET_USERS = gql`{
@@ -10,30 +11,26 @@ const GET_USERS = gql`{
         id
     }
 }`
-
-
-
 const GetUsers = () => {
-    const { loading, data } = useQuery(GET_USERS, {
-        pollInterval: 500
-    });
+    return (
+        <Query query={GET_USERS} pollInterval={3000}>{
+            ({ loading, data }) => {
+                if (loading) {
+                    return <h1>Hello</h1>
+                }
+                console.log(data);
+                return data.getUsers.map(p => {
+                    return <h1 key={p.id}>{p.name}</h1>
+                })
 
 
-    if (loading) {
-        return (
-            <h1>Loading</h1>
-        )
-    }
-    else {
-        const users = data.getUsers.map((user) =>
-            <li key={user.id}>{user.name}-{user.email}</li>
-        );
 
-        return <ul>{users}</ul>
-    }
 
+            }
+        }
+
+        </Query>
+    )
 }
-
-
 
 export default GetUsers;
